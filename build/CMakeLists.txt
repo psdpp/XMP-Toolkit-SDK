@@ -20,6 +20,13 @@ endif(ANDROID)
 # Enable folder grouping of projects in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# psdpp start
+# declare default value of XMP_BUILD_STATIC based on existing CMake variable 
+set(XMP_BUILD_STATIC $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>> CACHE BOOL "Static build")
+set(XMP_STRING_TYPE "std::string" CACHE STRING "String type")
+add_compile_definitions(TXMP_STRING_TYPE=${XMP_STRING_TYPE})
+# psdpp end
+
 # ==============================================================================
 # This project
 option(CMAKE_CL_64 "64bit target?" OFF)
@@ -40,6 +47,33 @@ endif()
 # ==============================================================================
 
 set(XMP_ROOT ${PROJECT_SOURCE_DIR}/..)
+
+# psdpp start
+include(FetchContent)
+
+FetchContent_Declare(libexpat
+  GIT_REPOSITORY https://github.com/libexpat/libexpat
+  GIT_TAG R_2_1_0
+  GIT_SHALLOW 1
+)
+
+FetchContent_Declare(zlib
+  GIT_REPOSITORY https://github.com/madler/zlib
+  GIT_TAG v1.2.11
+  GIT_SHALLOW 1
+  CONFIGURE_COMMAND "${CMAKE_COMMAND} -E copy_directory ${zlib_SOURCE_DIR}/config/ ${XMP_ROOT}/third-party/zlib"
+)
+function(ensure depname subdir destdir)
+  FetchContent_GetProperties(${depname})
+  if(NOT ${depname}_POPULATED)
+    FetchContent_Populate(${depname})
+    file(COPY "${${depname}_SOURCE_DIR}${subdir}" DESTINATION ${destdir})
+  endif()
+endfunction(ensure)
+
+ensure(libexpat /expat/ ${XMP_ROOT}/third-party/expat)
+ensure(zlib / ${XMP_ROOT}/third-party/zlib)
+# psdpp end
 
 # ==============================================================================
 # SET XMP and Plugin Version Numbers defined in an external file

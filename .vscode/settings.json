@@ -1,0 +1,4 @@
+{
+    // psdpp: default 'build' directory already exists in repo
+    "cmake.buildDirectory": "${workspaceFolder}/buildxmp"
+}

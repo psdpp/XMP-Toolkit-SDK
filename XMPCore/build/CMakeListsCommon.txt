@@ -1,5 +1,7 @@
 # ==============================================================================
-cmake_minimum_required(VERSION 2.8.6)
+# psdpp: override minimum required CMake version
+cmake_minimum_required(VERSION 2.8.12)
+# cmake_minimum_required(VERSION 2.8.6)
 
 # Enable folder grouping of projects in IDEs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
